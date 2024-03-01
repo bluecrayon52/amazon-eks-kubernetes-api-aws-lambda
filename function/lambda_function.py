@@ -64,8 +64,7 @@ def get_bearer_token():
     # remove any base64 encoding padding:
     return 'k8s-aws-v1.' + re.sub(r'=*', '', base64_url)
 
-
-def lambda_handler(_event, _context):
+def lambda_handler(event, context):
     "Lambda handler"
     if cluster_name in cluster_cache:
         cluster = cluster_cache[cluster_name]
@@ -89,10 +88,54 @@ def lambda_handler(_event, _context):
         'preferences': {},
         'users': [{'name': 'user1', "user" : {'token': get_bearer_token()}}]
     }
-
+    
     config.load_kube_config_from_dict(config_dict=kubeconfig)
     v1_api = client.CoreV1Api() # api_client
-    ret = v1_api.list_namespaced_pod("default")
-    return f"There are {len(ret.items)} pods in the default namespace."
+    
+    # Extract the action group, api path, and parameters from the prediction
+    action = event["actionGroup"]
+    api_path = event["apiPath"]
+    parameters = event["parameters"]
+    inputText = event["inputText"]
+    httpMethod = event["httpMethod"]
+    
+    if api_path.rsplit('/',1)[1] =='get-pods':
+      namespace_name=parameters[0]["value"]
+      pod_list = v1_api.list_namespaced_pod(namespace_name)
+      body = [{"name": item.metadata.name, "state": item.status.phase} for item in pod_list.items ]
+      response_code = 200
+      response_body = {"application/json": {"body": str(body)}}
+    
+    elif api_path == '/namespaces':
+      namespace_list = v1_api.list_namespace()
+      body = [item.metadata.name for item in namespace_list.items]
+      response_code = 200
+      response_body = {"application/json": {"body": str(body)}}
+      
+    else: 
+      body = {"{}::{} is not a valid api, try another one.".format(action, api_path)}
+      response_code = 400
+      response_body = {"application/json": {"body": str(body)}}
+     
+    
+    action_response = {
+        'actionGroup': action,
+        'apiPath': api_path,
+        'httpMethod': httpMethod,
+        'httpStatusCode': response_code,
+        'responseBody': response_body
+    }
+    
+    session_attributes = event['sessionAttributes']
+    prompt_session_attributes = event['promptSessionAttributes']
+    
+    api_response = {
+        'messageVersion': '1.0', 
+        'response': action_response,
+        'sessionAttributes': session_attributes,
+        'promptSessionAttributes': prompt_session_attributes
+    }
 
-print(lambda_handler(None, None))
+# print(lambda_handler(None, None))
+
+    return api_response

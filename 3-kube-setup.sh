@@ -8,23 +8,21 @@ set -eo pipefail
 
 ROLE_ARN=$(aws cloudformation describe-stacks --stack-name eks-lambda-python --query "Stacks[0].Outputs[?OutputKey=='Role'].OutputValue" --output text)
 CLUSTER_NAME=$(cat cluster-name.txt)
-RBAC_OBJECT='kind: Role
+RBAC_OBJECT='kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: read-only
-  namespace: default
 rules:
 - apiGroups: [""]
   resources: ["*"]
   verbs: ["get", "watch", "list"]
 ---
-kind: RoleBinding
+kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: read-only-binding
-  namespace: default
 roleRef:
-  kind: Role
+  kind: ClusterRole
   name: read-only
   apiGroup: rbac.authorization.k8s.io
 subjects:
@@ -38,7 +36,7 @@ echo ==========
 echo "$RBAC_OBJECT"
 echo
 while true; do
-    read -p "Do you want to create the Role and RoleBinding? (y/n)" response
+    read -p "Do you want to create the ClusterRole and ClusterRoleBinding? (y/n)" response
     case $response in
         [Yy]* ) echo "$RBAC_OBJECT" | kubectl apply -f -; break;;
         [Nn]* ) break;;
