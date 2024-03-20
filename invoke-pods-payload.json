@@ -1,0 +1,23 @@
+{
+    "messageVersion": "1.0",
+    "agent": {
+      "name": "test_agent",
+      "id": "test_id",
+      "alias": "test_alias",
+      "version": "test_version"
+    },
+    "inputText": "test_inputText",
+    "sessionId": "test_sessionId",
+    "actionGroup": "test_actionGroup",
+    "apiPath": "/namespaces/kube-system/get-pods",
+    "httpMethod": "get",
+    "parameters": [
+      {
+        "name": "namespace_name",
+        "type": "string",
+        "value": "kube-system"
+      }
+    ],
+    "sessionAttributes": {},
+    "promptSessionAttributes": {}
+  }

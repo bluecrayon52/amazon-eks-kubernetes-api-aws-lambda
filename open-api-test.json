@@ -1,0 +1,73 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Kubernetes Pods Automation API",
+        "version": "1.0.0",
+        "description": "API for listing Kubernetes resources by Namespace."
+    },
+    "paths": {
+        "/namespaces": {
+            "get": {
+                "summary": "Get a list of all namespaces in a Kubernetes cluster",
+                "description": "Get the list of all namespaces in a Kubernetes cluster. Return all the namespace names.",
+                "operationId": "getAllNamespaces",
+                "responses": {
+                    "200": {
+                        "description": "Gets the list of all namespaces in a Kubernetes cluster",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "namespace_name": {
+                                                "type": "string",
+                                                "description": "name of the namespace"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/namespaces/{namespace_name}/get-pods": {
+            "get": {
+                "summary": "Identify pods in a specified namespace",
+                "description": "Get a list of pods in a specified namespace. The API takes in only one namespace name and returns the list of pods in the associated namespace. This API should be called for each namespace name.",
+                "operationId": "getPods",
+                "parameters": [{
+                    "name": "namespace_name",
+                    "in": "path",
+                    "description": "Unique name of the namespace",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "List of pods in a specified namespace",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "pods": {
+                                            "type": "string",
+                                            "description": "The list of pods in a namespace."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+}

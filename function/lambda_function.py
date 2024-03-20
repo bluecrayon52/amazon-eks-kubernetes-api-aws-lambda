@@ -95,11 +95,11 @@ def lambda_handler(event, context):
     # Extract the action group, api path, and parameters from the prediction
     action = event["actionGroup"]
     api_path = event["apiPath"]
-    parameters = event["parameters"]
-    inputText = event["inputText"]
+   # inputText = event["inputText"]
     httpMethod = event["httpMethod"]
     
     if api_path.rsplit('/',1)[1] =='get-pods':
+      parameters = event["parameters"]
       namespace_name=parameters[0]["value"]
       pod_list = v1_api.list_namespaced_pod(namespace_name)
       body = [{"name": item.metadata.name, "state": item.status.phase} for item in pod_list.items ]

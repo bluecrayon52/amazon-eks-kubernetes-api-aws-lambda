@@ -1,5 +1,7 @@
 bucket-name.txt
 cluster-name.txt
+namespaces-out.json
+pods-out.json
 out.yml
 out.json
 lambda_build
