@@ -1,4 +1,3 @@
-"Lambda function list pods in EKS cluster"
 import base64
 import os
 import logging
@@ -91,27 +90,47 @@ def lambda_handler(event, context):
     
     config.load_kube_config_from_dict(config_dict=kubeconfig)
     v1_api = client.CoreV1Api() # api_client
+    co_api = client.CustomObjectsApi() # api_client
     
     # Extract the action group, api path, and parameters from the prediction
     action = event["actionGroup"]
     api_path = event["apiPath"]
-   # inputText = event["inputText"]
     httpMethod = event["httpMethod"]
     
+    # get pods by namespace
     if api_path.rsplit('/',1)[1] =='get-pods':
       parameters = event["parameters"]
       namespace_name=parameters[0]["value"]
       pod_list = v1_api.list_namespaced_pod(namespace_name)
-      body = [{"name": item.metadata.name, "state": item.status.phase} for item in pod_list.items ]
+      body = [{"name": item.metadata.name, 
+               "phase": item.status.phase,
+               "containers": [{"name": container.name,
+                               "image": container.image
+                               } for container in item.spec.containers],
+               } for item in pod_list.items ]
       response_code = 200
       response_body = {"application/json": {"body": str(body)}}
     
+    # get namespaces
     elif api_path == '/namespaces':
       namespace_list = v1_api.list_namespace()
       body = [item.metadata.name for item in namespace_list.items]
       response_code = 200
       response_body = {"application/json": {"body": str(body)}}
-      
+    
+    # get the CIS report custom resource
+    elif api_path == '/reports/cis':
+      cis_report = co_api.get_cluster_custom_object(
+         group="aquasecurity.github.io", 
+         version="v1alpha1", 
+         plural="clustercompliancereports", 
+         name="cis"
+        )
+      # body = {"spec": cis_report["spec"], "status": cis_report["status"]} 
+      body = {"status": cis_report["status"]} 
+      response_code = 200
+      response_body = {"application/json": {"body": str(body)}}
+
     else: 
       body = {"{}::{} is not a valid api, try another one.".format(action, api_path)}
       response_code = 400

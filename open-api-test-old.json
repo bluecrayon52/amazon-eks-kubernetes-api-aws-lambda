@@ -112,6 +112,82 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
+                                        "spec": {
+                                            "type": "object",
+                                            "description": "The compliance control checks specification object",
+                                            "properties": {
+                                                "compliance": {
+                                                    "type": "object",
+                                                    "description": "The compliance object",
+                                                    "properties": {
+                                                        "controls": {
+                                                            "type": "array",
+                                                            "description": "The controls array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "description": "A control object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string",
+                                                                        "description": "Unique ID of the control"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string",
+                                                                        "description": "Name of the control"
+                                                                    },
+                                                                    "description": {
+                                                                        "type": "string",
+                                                                        "description": "Description of the control"
+                                                                    },
+                                                                    "severity": {
+                                                                        "type": "string",
+                                                                        "description": "Severity of the control"
+                                                                    },
+                                                                    "checks": {
+                                                                        "type": "array",
+                                                                        "description": "Array of check IDs",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "description": "A Check ID object",
+                                                                            "properties": {
+                                                                                "id": {
+                                                                                    "type": "string",
+                                                                                    "description": "Unique ID of the check"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "description": {
+                                                            "type": "string",
+                                                            "description": "Description of the compliance object"
+                                                        },
+                                                        "id": {
+                                                            "type": "string",
+                                                            "description": "Unique ID of the compliance object"
+                                                        },
+                                                        "relatedResources": {
+                                                            "type": "array",
+                                                            "description": "Array of related resources",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "description": "A related resource"
+                                                            }
+                                                        },
+                                                        "title": {
+                                                            "type": "string",
+                                                            "description": "Title of the compliance object"
+                                                        },
+                                                        "version": {
+                                                            "type": "string",
+                                                            "description": "Version of the compliance object"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
                                         "status": {
                                             "type": "object",
                                             "description": "The status object",

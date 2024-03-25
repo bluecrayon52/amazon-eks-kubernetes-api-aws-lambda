@@ -13,12 +13,16 @@ set -eo pipefail
 #   sleep 2
 # done
 
-aws lambda invoke --function-name lambda-eks-getpods-python --cli-binary-format raw-in-base64-out --payload file://invoke-namespaces-payload.json namespaces-out.json
-cat namespaces-out.json
-echo ""
-sleep 2
+#aws lambda invoke --function-name lambda-eks-getpods-python --cli-binary-format raw-in-base64-out --payload file://invoke-namespaces-payload.json namespaces-out.json
+#cat namespaces-out.json
+#echo ""
 
-aws lambda invoke --function-name lambda-eks-getpods-python --cli-binary-format raw-in-base64-out --payload file://invoke-pods-payload.json  pods-out.json
-cat pods-out.json
-echo ""
-sleep 2
+
+#aws lambda invoke --function-name lambda-eks-getpods-python --cli-binary-format raw-in-base64-out --payload file://invoke-pods-payload.json  pods-out.json
+#cat pods-out.json
+#echo ""
+
+
+aws lambda invoke --function-name lambda-eks-getpods-python --cli-binary-format raw-in-base64-out --payload file://invoke-cis-payload.json  cis-out.json
+#cat pods-out.json
+#echo ""
